@@ -1,0 +1,20 @@
+- name: Worker Setup
+  hosts: storages
+
+  tasks:
+    - name: Install depencencies
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        name: nfs-common
+
+    - name: Mount nfs storage
+      become: true
+      become_user: root
+      ansible.posix.mount:
+        src: 192.168.0.243:/
+        path: /nfs
+        opts: "rw,sync,hard"
+        boot: true
+        state: mounted
+        fstype: nfs
