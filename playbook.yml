@@ -1,0 +1,12 @@
+- name: Apt Manager
+  hosts: winetree94
+
+  tasks:
+    - name: Update package
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        update_cache: true
+        autoclean: true
+        autoremove: true
+        upgrade: full
