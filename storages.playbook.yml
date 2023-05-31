@@ -1,20 +1,40 @@
 - name: Worker Setup
   hosts: storages
+  become: true
+  become_user: root
 
   tasks:
     - name: Install depencencies
-      become: true
-      become_user: root
       ansible.builtin.apt:
-        name: nfs-common
+        pkg:
+          - nfs-kernel-server
+          - rsync
 
-    - name: Mount nfs storage
-      become: true
-      become_user: root
+    - name: Mount Main Storage
       ansible.posix.mount:
-        src: 192.168.0.243:/
-        path: /nfs
-        opts: "rw,sync,hard"
-        boot: true
+        path: /vol/main
+        src: UUID=d426c995-d24b-4541-8866-84b339e84f20
+        fstype: ext4
+        opts: noatime
         state: mounted
-        fstype: nfs
+        boot: true
+
+    - name: Mount Backup Storage
+      ansible.posix.mount:
+        path: /vol/backup
+        src: UUID=b53b8f17-5e1e-47da-9aa8-55301de12c6d
+        fstype: ext4
+        opts: noatime
+        state: mounted
+        boot: true
+
+    - name: Allow hosts
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        line: /vol/main 192.168.0.*(rw,async,no_root_squash,no_subtree_check)
+
+    - name: Start nfs nfs-kernel-server
+      ansible.builtin.service:
+        name: nfs-kernel-server
+        state: started
+        enabled: true

@@ -1,5 +1,5 @@
 - name: Apt Manager
-  hosts: all
+  hosts: winetree94
 
   tasks:
     - name: Update package

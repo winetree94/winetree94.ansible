@@ -1,0 +1,6 @@
+---
+- name: Set up static networking configuration.
+  import_playbook: tasks/networking/static-networking.yml
+
+- name: Configure control plane as a router.
+  import_playbook: tasks/networking/router.yml

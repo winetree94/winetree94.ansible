@@ -14,7 +14,7 @@
       ansible.posix.mount:
         src: 192.168.0.243:/
         path: /nfs
-        opts: "rw,sync,hard"
-        boot: false
+        opts: "rw,async,hard,x-systemd.automount,x-systemd.requires=network-online.target"
         state: unmounted
-        fstype: nfs
+        boot: false
+        fstype: nfs4
